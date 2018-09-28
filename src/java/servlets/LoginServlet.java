@@ -46,6 +46,7 @@ public class LoginServlet extends HttpServlet {
         
         if(session.getAttribute("userName") != null) {
             response.sendRedirect("home");
+            return;
         }
         
         Cookie[] cookies = request.getCookies();
@@ -89,7 +90,7 @@ public class LoginServlet extends HttpServlet {
         if(u != null) {
             HttpSession session = request.getSession();
             session.setAttribute("userName", u.getUserName());
-            if((request.getParameter("persist")).equals("true")) {
+            if((request.getParameter("persist") != null) &&(request.getParameter("persist")).equals("true")) {
                 Cookie c = new Cookie("userName", u.getUserName());
                 c.setMaxAge(60*60*24*365); // Let cookie persist for 1 year max
                 c.setPath("/");
