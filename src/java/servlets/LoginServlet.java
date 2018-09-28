@@ -34,12 +34,18 @@ public class LoginServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException { 
+        HttpSession session = request.getSession();
+       
         if(request.getParameter("logout") != null){
-            (request.getSession()).invalidate();
+            (session).invalidate();
             request.setAttribute("error", "The user has been successfully logged out.");
             getServletContext().getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);
             return;
+        }
+        
+        if(session.getAttribute("userName") != null) {
+            response.sendRedirect("home");
         }
         
         Cookie[] cookies = request.getCookies();

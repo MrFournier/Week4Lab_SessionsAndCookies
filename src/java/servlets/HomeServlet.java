@@ -33,8 +33,12 @@ public class HomeServlet extends HttpServlet {
         HttpSession session = request.getSession();
         String userName = (String) session.getAttribute("userName");
         
-        request.setAttribute("userName", userName);
-        getServletContext().getRequestDispatcher("/WEB-INF/home.jsp").forward(request, response);
+        if(userName != null){
+            request.setAttribute("userName", userName);
+            getServletContext().getRequestDispatcher("/WEB-INF/home.jsp").forward(request, response);
+        } else {
+            response.sendRedirect("login");
+        }
     }
 
     /**
