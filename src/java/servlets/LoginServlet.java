@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,6 +35,23 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        if(request.getParameter("logout") != null){
+            (request.getSession()).invalidate();
+            request.setAttribute("error", "The user has been successfully logged out.");
+            getServletContext().getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);
+            return;
+        }
+        
+        Cookie[] cookies = request.getCookies();
+        String cookieName = "userName";
+        boolean isLoggedIn = false;
+        for (Cookie c: cookies) {
+            if(cookieName.equals(c.getName())) {
+                request.setAttribute("userName", c.getValue());
+                request.setAttribute("checked", "checked");
+            }
+        }
+        getServletContext().getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);
     }
 
     /**
@@ -65,6 +83,12 @@ public class LoginServlet extends HttpServlet {
         if(u != null) {
             HttpSession session = request.getSession();
             session.setAttribute("userName", u.getUserName());
+            if((request.getParameter("persist")).equals("true")) {
+                Cookie c = new Cookie("userName", u.getUserName());
+                c.setMaxAge(60*60*24*365); // Let cookie persist for 1 year max
+                c.setPath("/");
+                response.addCookie(c);
+            }
             response.sendRedirect("home");
             return;
         } else {

@@ -16,8 +16,8 @@
         <form action="login" method="POST">
             User Name: <input type="text" name="userName" value="${userName}"><br>
             Password: <input type="password" name="password"><br>
-            <input type="checkbox" name="persist" value="Remember Me"><br>
-            <input type="submit" value="Login" name="submit">
+            <input type="checkbox" name="persist" value="true">Remember Me<br>
+            <input type="submit" value="Login" name="submit" ${checked}>
         </form>
         <div>
             ${error}
